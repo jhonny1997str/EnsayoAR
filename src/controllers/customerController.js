@@ -1,4 +1,4 @@
-//logica del la api
+//logica del la api 
 //importo el modulo que gestiona la conexion ala base de datos
 const { captureRejectionSymbol } = require('supertest/lib/test');
 const pool = require('../db');
@@ -46,7 +46,7 @@ exports.saveCustomer = async (req, res) => {
     }
 
 };
-//update
+//update esto fue editado
 
 
 exports.updateCustomer = async (req, res) => {
