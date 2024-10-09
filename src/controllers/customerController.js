@@ -32,20 +32,34 @@ exports.getCustomerById = async (req, res) => {
 
     
 };
-//save
 exports.saveCustomer = async (req, res) => {
-    //extraigo la informacion del cliente 
-    const {customer_name, phone} = req.body;
-    try{
-        //consulta sql
+    // Extraigo la información del cliente
+    const { customer_name, phone } = req.body;
+
+    // Validación de entrada
+    if (!customer_name || !phone) {
+        return res.status(400).json({ error: 'El nombre y el teléfono son requeridos' });
+    }
+
+    try {
+        // Verificación de duplicados
+        const existingCustomer = await pool.query('SELECT * FROM customers WHERE phone = $1', [phone]);
+        if (existingCustomer.rowCount > 0) {
+            return res.status(409).json({ error: 'El cliente ya existe' });
+        }
+
+        // Consulta SQL para insertar el nuevo cliente
         const result = await pool.query('INSERT INTO customers (customer_name, phone) VALUES ($1, $2) RETURNING *', [customer_name, phone]);
+        
+        // Respuesta exitosa
         return res.status(201).json(result.rows[0]);
 
     } catch (error) {
-        return res.status(500).json({error : 'Error al crear cliente'});
+        console.error('Error al crear el cliente:', error); // Agregar un log para facilitar la depuración
+        return res.status(500).json({ error: 'Error al crear cliente' });
     }
-
 };
+
 //update esto fue editado
 
 
